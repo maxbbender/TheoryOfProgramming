@@ -23,20 +23,8 @@
 
       (expression (number) const-exp)
       (expression
-        ("minus" expression expression)
-        minus-rand)
-      
-      (expression
-       ("plus" expression expression)
-       plus-rand)
-      
-      (expression
-       ("times" expression expression)
-       times-rand)
-      
-      (expression
-       ("divided" "by" expression expression)
-       divide-rand)
+        ("-" "(" expression "," expression ")")
+        diff-exp)
       
       (expression
        ("zero?" "(" expression ")")
@@ -44,13 +32,13 @@
 
       (expression
        ("if" expression "then" expression "else" expression)
-       if-logic)
+       if-exp)
 
       (expression (identifier) var-exp)
 
       (expression
-       ("let" identifier "equal" expression)
-       a-decl)   
+       ("let" identifier "=" expression "in" expression)
+       let-exp)   
 
       (expression
        ("proc" "(" identifier ")" expression)

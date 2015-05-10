@@ -34,38 +34,13 @@
         (var-exp (var) (apply-env env var))
 
         ;\commentbox{\diffspec}
-        (minus-rand (exp1 exp2)
+        (diff-exp (exp1 exp2)
           (let ((val1 (value-of exp1 env))
                 (val2 (value-of exp2 env)))
             (let ((num1 (expval->num val1))
                   (num2 (expval->num val2)))
               (num-val
                 (- num1 num2)))))
-        
-        (plus-rand (exp1 exp2)
-           (let ((val1 (value-of exp1 env))
-                (val2 (value-of exp2 env)))
-            (let ((num1 (expval->num val1))
-                  (num2 (expval->num val2)))
-              (num-val
-                (+ num1 num2)))))
-        
-        (times-rand (exp1 exp2)
-           (let ((val1 (value-of exp1 env))
-                (val2 (value-of exp2 env)))
-            (let ((num1 (expval->num val1))
-                  (num2 (expval->num val2)))
-              (num-val
-                (* num1 num2)))))
-        
-        (divide-rand (exp1 exp2)
-           (let ((val1 (value-of exp1 env))
-                (val2 (value-of exp2 env)))
-            (let ((num1 (expval->num val1))
-                  (num2 (expval->num val2)))
-              (num-val
-                (/ num1 num2)))))
-                   
 
         ;\commentbox{\zerotestspec}
         (zero?-exp (exp1)
@@ -76,14 +51,14 @@
                 (bool-val #f)))))
               
         ;\commentbox{\ma{\theifspec}}
-        (if-logic (exp1 exp2 exp3)
+        (if-exp (exp1 exp2 exp3)
           (let ((val1 (value-of exp1 env)))
             (if (expval->bool val1)
               (value-of exp2 env)
               (value-of exp3 env))))
 
         ;\commentbox{\ma{\theletspecsplit}}
-        (a-decl (var exp1 body)       
+        (let-exp (var exp1 body)       
           (let ((val1 (value-of exp1 env)))
             (value-of body
               (extend-env var val1 env))))
