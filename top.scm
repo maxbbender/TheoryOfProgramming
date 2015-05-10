@@ -13,27 +13,20 @@
   ;; provide anything, but we do so just in case.  
 
   (provide run run-all)
-
+  
+  ;;; interface for book test ;;;
   (provide test-all)
-
   (define (test-all) (run-all))
 
-  ;; here are some other things that could be provided:
-
-  ;;   (provide (all-defined-out))
-  ;;   (provide (all-from "interp.scm"))
-  ;;   (provide (all-from "lang.scm"))
-  
   ;;;;;;;;;;;;;;;; interface to test harness ;;;;;;;;;;;;;;;;
   
   ;; run : String -> ExpVal
-  ;; Page: 71
   (define run
     (lambda (string)
       (value-of-program (scan&parse string))))
   
-  ;; run-all : () -> unspecified
-  
+  ;; run-all : () -> Unspecified
+
   ;; runs all the tests in test-list, comparing the results with
   ;; equal-answer?  
 
@@ -48,20 +41,14 @@
   (define sloppy->expval 
     (lambda (sloppy-val)
       (cond
-        ;; Changed for In-Class Exercise 3.C
-        ((integer? sloppy-val) (num-val sloppy-val))
+        ((number? sloppy-val) (num-val sloppy-val))
         ((boolean? sloppy-val) (bool-val sloppy-val))
-        ;; Exercise 3.9
-        ((list? sloppy-val) (list-val (map sloppy->expval sloppy-val)))
-        ;; In-Class Exercise 3.C
-        ((rational? sloppy-val) (ratio-val (numerator sloppy-val)
-                                        (denominator sloppy-val)))
         (else
          (eopl:error 'sloppy->expval 
                      "Can't convert sloppy value to expval: ~s"
                      sloppy-val)))))
     
-  ;; run-one : symbol -> expval
+  ;; run-one : Sym -> ExpVal
 
   ;; (run-one sym) runs the test whose name is sym
   

@@ -5,7 +5,7 @@
 
   (require "data-structures.scm")
 
-  (provide init-env empty-env extend-env extend-env* apply-env)
+  (provide init-env empty-env extend-env apply-env)
 
 ;;;;;;;;;;;;;;;; initial environment ;;;;;;;;;;;;;;;;
   
@@ -28,45 +28,19 @@
 
 ;;;;;;;;;;;;;;;; environment constructors and observers ;;;;;;;;;;;;;;;;
 
-  (define empty-env
-    (lambda ()
-      (empty-env-record)))
-  
-  (define empty-env? 
-    (lambda (x)
-      (empty-env-record? x)))
-
-  (define extend-env
-    (lambda (sym val old-env)
-      (extended-env-record sym val old-env)))
-
-  ;; Exercise 3.16 - auxiliary function
-  ;; Spec:
-  ;;   (null? ids) = #t
-  ;;  ------------------------------------
-  ;;   (extend-env* ids vals env0) = env0
-  ;;
-  ;;   (null? ids) = #f
-  ;;   (null? vals) = #f
-  ;;   (extend-env (car ids) (car vals) env0) = env1
-  ;;   (extend-env* (cdr ids) (cdr vals) env1) = env2
-  ;;  ------------------------------------------------
-  ;;   (extend-env* ids vals env0) = env2
-  (define extend-env*
-    (lambda (syms vals old-env)
-      (if (null? syms)
-          old-env
-          (extend-env* (cdr syms) (cdr vals) (extend-env (car syms) (car vals) old-env)))))
-
+  ;; Page: 86
   (define apply-env
     (lambda (env search-sym)
-      (if (empty-env? env)
-	(eopl:error 'apply-env "No binding for ~s" search-sym)
-	(let ((sym (extended-env-record->sym env))
-	      (val (extended-env-record->val env))
-	      (old-env (extended-env-record->old-env env)))
-	  (if (eqv? search-sym sym)
+      (cases environment env
+        (empty-env ()
+          (eopl:error 'apply-env "No binding for ~s" search-sym))
+        (extend-env (var val saved-env)
+	  (if (eqv? search-sym var)
 	    val
-	    (apply-env old-env search-sym))))))
-
+	    (apply-env saved-env search-sym)))
+        (extend-env-rec (p-name b-var p-body saved-env)
+          (if (eqv? search-sym p-name)
+            (proc-val (procedure b-var p-body env))          
+            (apply-env saved-env search-sym))))))
+    
   )

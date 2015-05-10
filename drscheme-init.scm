@@ -4,9 +4,8 @@
 ;;; makes structs printable, and provides basic functionality for
 ;;; testing.  This includes pretty-printing and tracing.
 
-
 (module drscheme-init mzscheme
-
+  
   ;; show the contents of define-datatype values
   (print-struct #t)
 

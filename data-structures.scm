@@ -1,6 +1,8 @@
 (module data-structures (lib "eopl.ss" "eopl")
 
-  ;; data structures for let-lang.
+  ;; data structures for letrec-lang.
+
+  (require "lang.scm")                  ; for expression?
 
   (provide (all-defined-out))               ; too many things to list
 
@@ -13,30 +15,12 @@
       (value number?))
     (bool-val
       (boolean boolean?))
-    ;; Exercise 3.9
-    ;; list-val: ListOf(ExpVal) -> ExpVal
-    (list-val
-      (lst (list-of expval?)))
-    ;; In-Class Exercise 3.C
-    ;; ratio-val: Number x Number -> ExpVal
-    (ratio-val
-      (numer number?)
-      (denom number?))
-    )
-
-  ;; Exercise 3.9 - Auxiliary procedure from Chapter 2, p.48
-  (define list-of
-    (lambda (pred)
-      (lambda (val)
-        (or (null? val)
-            (and (pair? val)
-                 (pred (car val))
-                 ((list-of pred) (cdr val)))))))
+    (proc-val 
+      (proc proc?)))
 
 ;;; extractors:
 
   ;; expval->num : ExpVal -> Int
-  ;; Page: 70
   (define expval->num
     (lambda (v)
       (cases expval v
@@ -44,66 +28,45 @@
 	(else (expval-extractor-error 'num v)))))
 
   ;; expval->bool : ExpVal -> Bool
-  ;; Page: 70
   (define expval->bool
     (lambda (v)
       (cases expval v
 	(bool-val (bool) bool)
 	(else (expval-extractor-error 'bool v)))))
 
-  ;; Exercise 3.9
-  ;; expval->list : ExpVal -> List
-  (define expval->list
+  ;; expval->proc : ExpVal -> Proc
+  (define expval->proc
     (lambda (v)
       (cases expval v
-    (list-val (lst) lst)
-    (else (expval-extractor-error 'list v)))))
-
-  ;; In-Class Exercise 3.C
-  ;; expval->rational : ExpVal -> Rational
-  (define expval->rational
-    (lambda (v)
-      (cases expval v
-	(ratio-val (numer denom) (/ numer denom))
-	(else (expval-extractor-error 'bool v)))))
+	(proc-val (proc) proc)
+	(else (expval-extractor-error 'proc v)))))
 
   (define expval-extractor-error
     (lambda (variant value)
       (eopl:error 'expval-extractors "Looking for a ~s, found ~s"
 	variant value)))
 
-;;;;;;;;;;;;;;;; environment structures ;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;; procedures ;;;;;;;;;;;;;;;;
 
-;; example of a data type built without define-datatype
+  ;; proc? : SchemeVal -> Bool
+  ;; procedure : Var * Exp * Env -> Proc
+  (define-datatype proc proc?
+    (procedure
+      (bvar symbol?)
+      (body expression?)
+      (env environment?)))
 
-  (define empty-env-record
-    (lambda () 
-      '()))
-
-  (define extended-env-record
-    (lambda (sym val old-env)
-      (cons (list sym val) old-env)))
-  
-  (define empty-env-record? null?)
-  
-  (define environment?
-    (lambda (x)
-      (or (empty-env-record? x)
-          (and (pair? x)
-               (symbol? (car (car x)))
-               (expval? (cadr (car x)))
-               (environment? (cdr x))))))
-
-  (define extended-env-record->sym
-    (lambda (r)
-      (car (car r))))
-
-  (define extended-env-record->val
-    (lambda (r)
-      (cadr (car r))))
-
-  (define extended-env-record->old-env
-    (lambda (r)
-      (cdr r)))
+  ;; Page: 86
+  (define-datatype environment environment?
+    (empty-env)
+    (extend-env 
+      (bvar symbol?)
+      (bval expval?)
+      (saved-env environment?))
+    (extend-env-rec
+      (id symbol?)
+      (bvar symbol?)
+      (body expression?)
+      (saved-env environment?)))
 
 )

@@ -1,0 +1,1 @@
+("6.1.1" ("18fb9b70c721962e42e53559ecbdd7fbe6c3e6bf" . "219290536776c776c2615a6edc10a642807fb5a6") #"C:\\Users\\IBM_ADMIN\\finalproj\\environments.scm" #"C:\\Users\\IBM_ADMIN\\finalproj\\lang.scm" #"C:\\Users\\IBM_ADMIN\\finalproj\\drscheme-init.scm" #"C:\\Users\\IBM_ADMIN\\finalproj\\data-structures.scm" (collects #"eopl" #"eopl.rkt"))
